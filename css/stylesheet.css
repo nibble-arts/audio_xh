@@ -1,0 +1,75 @@
+.audio {
+	/*width: 50%;*/
+	margin: 0 0 15px 20px;
+	border: solid 1px #a0a0a0;
+	padding: 5px;
+}
+
+.audio_wrapper {
+	border: 1px solid #888888;
+	padding: 15px;
+	margin: 10px 0 10px 0;
+}
+
+.audio_search_wrapper {
+	margin-bottom: 20px;
+}
+
+.audio_breadcrumb {
+	margin-bottom: 20px;
+}
+
+.audio_dir_block {
+}
+
+.audio_header {
+}
+
+.audio_title {
+	font-size: 105%;
+	font-weight: bold;
+}
+
+.audio_file_title {
+	font-size: 90%;
+	font-weight: bold;
+	float: left;
+}
+
+.audio_count {
+	font-size: 95%;
+	font-style: italic;
+	margin-bottom: 10px;
+}
+
+.audio_input {
+	padding: 3px;
+	border-radius: 5px;
+}
+
+.audio_submit {
+}
+
+.audio_type {
+	font-size: 60%;
+	font-weight: normal;
+	float: right;
+}
+
+.audio_icon {
+	width: 20px;
+}
+
+.audio_icon_big {
+	width: 40px;
+}
+
+.audio_dir_title {
+	font-size: 105%;
+	font-weight: bold;
+}
+
+.audio_dir_link {
+	margin-left: 20px;
+	font-weight: bold;
+}
