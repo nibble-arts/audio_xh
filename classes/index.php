@@ -12,39 +12,42 @@ class Index {
 	private static $keywords;
 
 
+	// =================================================
+	// create index file
 	public static function index($root) {
 
 		self::scan($root);
 		self::parse();
+
+		self::write();
+
 	}
 
 
-	public static function scan($root) {
+	// get count of keywords
+	public static function count() {
+		return count (self::$keywords);
+	}
 
-		// get directory
-		$dir = scandir(Path::create([Config::root(), $root]));
 
-		// iterate files
-		foreach ($dir as $file) {
+	// get count of files
+	public static function files() {
 
-			if ($file != "." && $file != "..") {
+		$files = parse_ini_file(Path::create([Config::root(), "files.ini"]));
 
-				// is dir > recursion
-				if (is_dir(Path::create([Config::root(), $root, $file]))) {
-					array_merge(self::$files, self::scan(Path::create([$root, $file])));
-				}
-
-				else {
-					self::$files[] = ["path" => $root, "file" => $file];
-				}
-			}
-
+		if ($files === false) {
+			debug("keine datei");
 		}
+
+		return $files["files"];
 	}
 
 
+	// =================================================
 	// find keyword
 	public static function find($query) {
+
+		self::read();
 
 		$result = [];
 
@@ -84,6 +87,54 @@ class Index {
 		}
 
 		return $and;
+	}
+
+
+	// =================================================
+	// write index file
+	private static function write() {
+
+		if (!file_put_contents(Path::create([Config::root(), "index.ini"]), Array2Ini::serialize(self::$keywords))) {
+
+			Message::failure("index_write_failure");
+		}
+
+		if (!file_put_contents(Path::create([Config::root(), "files.ini"]), 'files = "' . count(self::$files) . '"')) {
+
+			Message::failure("index_file_write_failure");
+		}
+	}
+
+
+	// read index file
+	public static function read() {
+		self::$keywords = parse_ini_file(Path::create([Config::root(), "index.ini"]), true);
+	}
+
+
+	// =================================================
+	// scan directory recursive
+	private static function scan($root) {
+
+		// get directory
+		$dir = scandir(Path::create([Config::root(), $root]));
+
+		// iterate files
+		foreach ($dir as $file) {
+
+			if ($file != "." && $file != "..") {
+
+				// is dir > recursion
+				if (is_dir(Path::create([Config::root(), $root, $file]))) {
+					array_merge(self::$files, self::scan(Path::create([$root, $file])));
+				}
+
+				else {
+					self::$files[] = ["path" => $root, "file" => $file];
+				}
+			}
+
+		}
 	}
 
 

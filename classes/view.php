@@ -49,7 +49,7 @@ class View {
 				// directory up
 				if (Config::display_up()) {
 
-					$ret .= '<div><a href="?' . $su . '&audio_path=' . $up_path . "/" . '&upload_dir=' . $up_path . '">';
+					$ret .= '<div><a href="?' . $su . '&audio_path=' . $up_path . '>';
 						$ret .= '<img class="audio_icon" src="' . AUDIO_PLUGIN_BASE . 'images/up.png">';
 					$ret .= '</a></div>';
 				}
@@ -77,7 +77,7 @@ class View {
 					// is dir
 					if (is_dir(Path::create([self::$root, $in_path]))) {
 
-						$ret .= '<div class="audio_dir_link"><a href="?' . $su . '&audio_path=' . $in_path . '&upload_dir=' . $in_path . '">' . $file . '</a></div>';
+						$ret .= '<div class="audio_dir_link"><a href="?' . $su . '&audio_path=' . $in_path . '">' . $file . '</a></div>';
 					}
 
 					// is file
@@ -298,5 +298,78 @@ class View {
 		$ret .= '</div>';
 
 		return $ret;
+	}
+
+
+
+	// upload dialog
+	public static function upload() {
+
+		global $su;
+
+		$o .= '<div class="audio_upload_block">';
+
+			$o .= '<div class="audio_title">' . Text::upload() . '</div>';
+
+			$o .= '<div class="audio_upload_size">' . Text::file_max_size() . ' ' . ini_get('post_max_size') . '</div>';
+
+			// upload form start		
+			$o .= '<form method="post" enctype="multipart/form-data" action="?' . $su . '">';
+
+				// file selection
+				$o .= Text::file_select();
+
+				// add filter for audio files
+				$o .= ' <input type="file" name="audio_file" size="50" accept=audio/*>';
+
+
+				// hidden parameters			
+				// $o .= '<input type="hidden" name="MAX_FILE_SIZE" value="2000000">';
+				$o .= '<input type="hidden" name="audio_action" value="audio_upload">';
+				$o .= '<input type="hidden" name="audio_path" value="' . Session::get("audio_path") . '">';
+				$o .= '<input type="submit" name="audio_submit" value="' . Text::file_upload() . '">';
+
+			$o .= '</form>';
+		$o .= '</div>';
+
+		return $o;
+	}
+
+
+	// display file count
+	public static function file_count() {
+
+		Index::read();
+		
+		$o .= '<div class="audio_file_count">';
+
+			$o .= Index::files() . ' ' . Text::count_files();
+
+			$o .= ' - ' . Index::count() . ' ' . Text::count_keywords();
+
+		$o .= '</div>';
+
+		return $o;
+
+	}
+
+	private static $sizes = ["B","KB","MB","GB","TB"];
+
+	// show human readable file size
+	public static function filesize($size, $pow = 1) {
+
+		if ($size >= pow(1024, $pow)) {
+			return self::filesize($size, $pow + 1);
+		}
+
+		else {
+			$pow--;
+
+			$value = number_format($size / pow(1024, $pow), 1);
+
+			if ($pow <= count(self::$sizes)) {
+				return $value . " " . self::$sizes[$pow];
+			}
+		}
 	}
 }

@@ -20,6 +20,24 @@
 }
 
 .audio_dir_block {
+	margin-bottom: 15px;
+}
+
+.audio_file_count {
+	font-size: 90%;
+	padding: 3px;
+	background-color: #d0d0d0;
+	margin-bottom: 10px;
+}
+
+.audio_upload_block {
+	border: 1px solid #888888;
+	padding: 15px;
+}
+
+.audio_upload_size {
+	font-size: 80%;
+	margin-bottom: 10px;
 }
 
 .audio_header {

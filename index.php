@@ -63,6 +63,8 @@ function audio($audio = false, $attr = false) {
 
 	$ret .= '<div class="audio_wrapper">';
 
+		$ret .= audio\View::file_count();
+
 		$ret .= audio\View::search();
 
 
@@ -70,10 +72,8 @@ function audio($audio = false, $attr = false) {
 		// show search result
 		if ($query = audio\Session::param("audio_query")) {
 
-			// create index
-			audio\Index::index($path);
+			// search
 			$files = audio\Index::find($query);
-
 			$ret .= audio\View::files($files);
 		}
 
@@ -86,6 +86,13 @@ function audio($audio = false, $attr = false) {
 
 		else {
 			$ret .= audio\View::file($path, $audio, $attr, $edit);
+		}
+
+
+		// ==========================================================
+		// add upload
+		if (audio\Config::display_upload() !== "false") {
+			$ret .= audio\View::upload();
 		}
 
 		$ret = audio\Message::render() . $ret;

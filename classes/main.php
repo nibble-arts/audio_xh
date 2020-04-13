@@ -12,6 +12,7 @@ class Main {
 		Config::init($config["audio"]);
 		Text::init($text["audio"]);
 
+		File::init("audio_file");
 	}
 
 
@@ -19,6 +20,39 @@ class Main {
 	public static function action() {
 
 		switch (Session::get("audio_action")) {
+
+			// save downloaded file
+			case "audio_upload":
+
+				// set message/error
+				if (File::error()) {
+					Message::failure(File::error_string());
+				}
+				else {
+					Message::success(File::error_string());
+				}
+
+
+				// file exists
+				if (File::has_file()) {
+
+					// check file size
+					if((File::size() > Config::file_max_size()) && Config::file_max_size() != "") {
+						Message::failure("error_file_size");
+					}
+
+					// copy file to destinition
+					else {
+						File::copy(Path::create([Config::root(), Session::param("audio_path")]));
+					}
+
+
+					// neu indizieren
+					Index::index($path);
+
+				}
+
+				break;
 
 
 			// force download file
@@ -45,6 +79,9 @@ class Main {
 
 					if (unlink ($file)) {
 						Message::success("file_deleted");
+
+						// neu indizieren
+						Index::index($path);
 					}
 
 					else {
